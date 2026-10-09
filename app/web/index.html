@@ -1,0 +1,29 @@
+<!doctype html>
+<!--
+  Havoc web UI - single-page app on top of the /v1 REST API.
+  AI-assisted: written with the help of Claude (Anthropic).
+-->
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Havoc</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <script src="/static/app.js" defer></script>
+</head>
+
+<body>
+  <header class="topbar" id="topbar" hidden>
+    <a href="#/" class="brand">Havoc</a>
+    <nav id="nav"></nav>
+    <div class="user">
+      <span id="user-name"></span>
+      <button type="button" id="logout" class="ghost">Log out</button>
+    </div>
+  </header>
+  <main id="view"></main>
+  <div id="toast" class="toast" role="status" hidden></div>
+</body>
+
+</html>

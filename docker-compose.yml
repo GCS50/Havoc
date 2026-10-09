@@ -1,0 +1,41 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: havoc
+      POSTGRES_PASSWORD: havoc
+      POSTGRES_DB: havoc
+    ports:
+      - "5432:5432"
+    volumes:
+      - havoc_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U havoc -d havoc"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  api:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql+asyncpg://havoc:havoc@db:5432/havoc
+      JWT_SECRET: dev-secret-change-me-in-production
+      JWT_ALGORITHM: HS256
+      JWT_EXPIRY_MINUTES: "60"
+      DEFAULT_PROJECT_ID: moon
+      ADMIN_EMAIL: admin@havoc.local
+      ADMIN_PASSWORD: change-me-admin
+      ADMIN_NAME: Havoc Admin
+    ports:
+      - "8000:8000"
+    # Run migrations, seed the bootstrap admin, then start the API.
+    command: >
+      sh -c "alembic upgrade head &&
+             python -m scripts.seed_admin &&
+             uvicorn app.main:app --host 0.0.0.0 --port 8000"
+
+volumes:
+  havoc_pgdata:
